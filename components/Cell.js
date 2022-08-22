@@ -23,15 +23,15 @@ export default class Cell extends Component {
     }
 
     bombSeter = () => {
-        if(Constants.MAX_BOMBS_CELLS !== 0){
+        if (Constants.MAX_BOMBS_CELLS !== 0) {
             let prob = Math.random() < 0.1;
-            if(prob){
+            if (prob) {
                 Constants.MAX_BOMBS_CELLS--;
                 return true;
             } else {
                 return false;
             }
-        } else{
+        } else {
             return false;
         }
     }
@@ -90,9 +90,25 @@ export default class Cell extends Component {
                     <Image source={Imagens.mine} style={{ width: this.props.width, height: this.props.height }} resizeMode="contain" />
                 )
             } else if (this.state.neighboors) {
-                content = (
-                    <Text>{this.state.neighboors}</Text>
-                )
+                if (this.state.neighboors == 1) {
+                    content = (
+                        <Text style={{ color: 'blue' }}>{this.state.neighboors}</Text>
+                    )
+                }
+                else if (this.state.neighboors == 2) {
+                    content = (
+                        <Text style={{ color: 'green' }}>{this.state.neighboors}</Text>
+                    )
+                }
+                else if (this.state.neighboors == 3) {
+                    content = (
+                        <Text style={{ color: 'red' }}>{this.state.neighboors}</Text>
+                    )
+                } else {
+                    content = (
+                        <Text>{this.state.neighboors}</Text>
+                    )
+                }
             }
 
             return (
@@ -114,10 +130,10 @@ const styles = StyleSheet.create({
         borderBottomColor: '#7d7d7d'
     },
     cellRevealed: {
-        backgroundColor: '#bdbdbd',
+        backgroundColor: '#ffffff',
         borderWidth: 1,
         borderColor: '#7d7d7d',
         alignItems: 'center',
         justifyContent: 'center'
-    }
+    },
 })
