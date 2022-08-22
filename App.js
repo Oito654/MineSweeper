@@ -23,12 +23,12 @@ export default class App extends Component {
 
   onDie = () => {
     Alert.alert('Boooooom!');
-    for(let i=0; i<Constants.BOARD_SIZE; i++){
-      for(let j=0; j<Constants.BOARD_SIZE; j++){
+    for (let i = 0; i < Constants.BOARD_SIZE; i++) {
+      for (let j = 0; j < Constants.BOARD_SIZE; j++) {
         this.grid[i][j].revealWithoutCallback();
       }
     }
-    
+
   }
 
   revealNeighboors = (x, y) => {
@@ -87,8 +87,9 @@ export default class App extends Component {
   }
 
   resetGame = () => {
-    for(let i=0; i<Constants.BOARD_SIZE; i++){
-      for(let j=0; j<Constants.BOARD_SIZE; j++){
+    Constants.MAX_BOMBS_CELLS = 8;
+    for (let i = 0; i < Constants.BOARD_SIZE; i++) {
+      for (let j = 0; j < Constants.BOARD_SIZE; j++) {
         this.grid[i][j].reset();
       }
     }
@@ -111,6 +112,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#bdbdbd'
+    backgroundColor: '#ffffff'
   },
 });
