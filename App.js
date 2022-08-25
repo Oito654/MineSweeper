@@ -23,12 +23,33 @@ export default class App extends Component {
 
   onDie = () => {
     Alert.alert('Boooooom!');
+    console.log(Constants.TILE_COUNTER);
     for (let i = 0; i < Constants.BOARD_SIZE; i++) {
       for (let j = 0; j < Constants.BOARD_SIZE; j++) {
         this.grid[i][j].revealWithoutCallback();
       }
     }
+  }
 
+  onWin = () => {
+    Alert.alert('Você venceu!');
+    console.log(Constants.TILE_COUNTER);
+    for (let i = 0; i < Constants.BOARD_SIZE; i++) {
+      for (let j = 0; j < Constants.BOARD_SIZE; j++) {
+        this.grid[i][j].revealWithoutCallback();
+      }
+    }
+  }
+
+  checkForTiles = () => {
+    Constants.TILE_COUNTER = 0;
+    for (let i = 0; i < Constants.BOARD_SIZE; i++) {
+      for (let j = 0; j < Constants.BOARD_SIZE; j++) {
+        if(this.grid[i][j].state.revealed && !this.grid[i][j].state.isMine){
+          Constants.TILE_COUNTER++;
+        }
+      }
+    }
   }
 
   revealNeighboors = (x, y) => {
@@ -43,7 +64,7 @@ export default class App extends Component {
 
   onReveal = (x, y) => {
     let neighboors = 0;
-
+    this.checkForTiles();
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {
         if (x + i >= 0 && x + i <= Constants.BOARD_SIZE - 1 && y + j >= 0 && y + j <= Constants.BOARD_SIZE - 1) {
@@ -68,6 +89,7 @@ export default class App extends Component {
         return <Cell
           onReveal={this.onReveal}
           onDie={this.onDie}
+          onWin={this.onWin}
           key={collIdx}
           width={Constants.CELL_SIZE}
           height={Constants.CELL_SIZE}
