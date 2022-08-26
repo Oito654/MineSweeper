@@ -19,6 +19,7 @@ export default class Cell extends Component {
             isMine: 0,
             neighboors: null,
             counted: false,
+            banner: false
         }
     }
 
@@ -35,7 +36,9 @@ export default class Cell extends Component {
         if (this.state.revealed) {
             return;
         }
-
+        if (this.state.banner) {
+            return;
+        }
         if (!userInitiated && this.state.isMine) {
             return;
         }
@@ -46,12 +49,12 @@ export default class Cell extends Component {
             if (this.state.isMine) {
                 this.props.onDie();
             } else {
-                if(this.state.revealed && !this.state.counted){
+                if (this.state.revealed && !this.state.counted) {
                     Constants.TILE_COUNTER++;
                     this.state.counted = true;
                 }
                 this.props.onReveal(this.props.x, this.props.y);
-                if(Constants.TILE_COUNTER === 92){
+                if (Constants.TILE_COUNTER === 92) {
                     this.props.onWin();
                 }
             }
@@ -63,20 +66,31 @@ export default class Cell extends Component {
             revealed: false,
             isMine: 0,
             neighboors: null,
-            counted: false
+            counted: false,
+            banner: false
         })
     }
 
     render() {
-        if (!this.state.revealed) {
+        if (!this.state.revealed && !this.state.banner) {
             return (
-                <TouchableOpacity onPress={() => { this.onReveal(true); }}>
+                <TouchableOpacity onPress={() => { this.onReveal(true); }} onLongPress={() => {this.setState({banner:true})}}>
                     <View style={[styles.cell, { width: this.props.width, height: this.props.height }]}>
 
                     </View>
                 </TouchableOpacity>
             )
-        } else {
+        }
+        else if (this.state.banner) {
+            return (
+                <TouchableOpacity onLongPress={() => {this.setState({banner:false})}}>
+                    <View style={[styles.cell, { width: this.props.width, height: this.props.height }]}>
+                        <Image source={Imagens.banner} style={{ width: this.props.width/1.5, height: this.props.height, alignContent: 'center'}} resizeMode="contain" />
+                    </View>
+                </TouchableOpacity>
+            )
+        }
+        else {
             let content = null;
 
             if (this.state.isMine) {
