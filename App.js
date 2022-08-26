@@ -26,8 +26,8 @@ export default class App extends Component {
     for (let i = 0; i < Constants.BOARD_SIZE; i++) {
       for (let j = 0; j < Constants.BOARD_SIZE; j++) {
         this.grid[i][j].revealWithoutCallback();
-      }
-    }
+      };
+    };
   }
 
   onWin = () => {
@@ -35,31 +35,20 @@ export default class App extends Component {
     for (let i = 0; i < Constants.BOARD_SIZE; i++) {
       for (let j = 0; j < Constants.BOARD_SIZE; j++) {
         this.grid[i][j].revealWithoutCallback();
-      }
-    }
+      };
+    };
   }
 
-  bombSeter = (x,y) => {
+  bombSeter = (x, y) => {
     while (Constants.MAX_BOMBS_CELLS >= 1) {
       for (let i = 0; i < Constants.BOARD_SIZE; i++) {
         for (let j = 0; j < Constants.BOARD_SIZE; j++) {
-          if (Math.random() < 0.1  && i !== x && j !== y) {
+          if (Math.random() < 0.1 && i !== x && j !== y) {
             if (Constants.MAX_BOMBS_CELLS >= 1) {
               this.grid[i][j].state.isMine = true;
               Constants.MAX_BOMBS_CELLS--;
             }
           }
-        }
-      }
-    }
-  }
-
-  checkForTiles = () => {
-    Constants.TILE_COUNTER = 0;
-    for (let i = 0; i < Constants.BOARD_SIZE; i++) {
-      for (let j = 0; j < Constants.BOARD_SIZE; j++) {
-        if (this.grid[i][j].state.revealed && !this.grid[i][j].state.isMine) {
-          Constants.TILE_COUNTER++;
         }
       }
     }
@@ -102,13 +91,11 @@ export default class App extends Component {
 
   onReveal = (x, y) => {
 
-    if(Constants.FIRST_CLICK){
+    if (Constants.FIRST_CLICK) {
       Constants.FIRST_CLICK = false;
       this.bombSeter(x, y);
       this.checkForNeighboors();
     }
-
-    this.checkForTiles();
 
     if (this.grid[x][y].state.neighboors === null) {
       this.revealNeighboors(x, y);
@@ -143,6 +130,8 @@ export default class App extends Component {
   resetGame = () => {
     Constants.MAX_BOMBS_CELLS = 8;
     Constants.FIRST_CLICK = true;
+    Constants.TILE_COUNTER = 0;
+
     for (let i = 0; i < Constants.BOARD_SIZE; i++) {
       for (let j = 0; j < Constants.BOARD_SIZE; j++) {
         this.grid[i][j].reset();

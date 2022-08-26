@@ -17,7 +17,8 @@ export default class Cell extends Component {
         this.state = {
             revealed: false,
             isMine: 0,
-            neighboors: null
+            neighboors: null,
+            counted: false,
         }
     }
 
@@ -45,6 +46,10 @@ export default class Cell extends Component {
             if (this.state.isMine) {
                 this.props.onDie();
             } else {
+                if(this.state.revealed && !this.state.counted){
+                    Constants.TILE_COUNTER++;
+                    this.state.counted = true;
+                }
                 this.props.onReveal(this.props.x, this.props.y);
                 if(Constants.TILE_COUNTER === 92){
                     this.props.onWin();
@@ -57,7 +62,8 @@ export default class Cell extends Component {
         this.setState({
             revealed: false,
             isMine: 0,
-            neighboors: null
+            neighboors: null,
+            counted: false
         })
     }
 
