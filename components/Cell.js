@@ -5,8 +5,7 @@ import {
     View,
     TouchableOpacity,
     Image,
-    Text,
-    Alert
+    Text
 } from 'react-native';
 import Constants from '../Constants';
 import Imagens from '../assets/Imagens';
@@ -17,22 +16,8 @@ export default class Cell extends Component {
 
         this.state = {
             revealed: false,
-            isMine: this.bombSeter(),
+            isMine: 0,
             neighboors: null
-        }
-    }
-
-    bombSeter = () => {
-        if (Constants.MAX_BOMBS_CELLS !== 0) {
-            let prob = Math.random() < 0.1;
-            if (prob) {
-                Constants.MAX_BOMBS_CELLS--;
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
         }
     }
 
@@ -61,6 +46,9 @@ export default class Cell extends Component {
                 this.props.onDie();
             } else {
                 this.props.onReveal(this.props.x, this.props.y);
+                if(Constants.TILE_COUNTER === 92){
+                    this.props.onWin();
+                }
             }
         });
     }
@@ -68,7 +56,7 @@ export default class Cell extends Component {
     reset = () => {
         this.setState({
             revealed: false,
-            isMine: this.bombSeter(),
+            isMine: 0,
             neighboors: null
         })
     }

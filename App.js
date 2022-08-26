@@ -23,7 +23,6 @@ export default class App extends Component {
 
   onDie = () => {
     Alert.alert('Boooooom!');
-    console.log(Constants.TILE_COUNTER);
     for (let i = 0; i < Constants.BOARD_SIZE; i++) {
       for (let j = 0; j < Constants.BOARD_SIZE; j++) {
         this.grid[i][j].revealWithoutCallback();
@@ -33,10 +32,24 @@ export default class App extends Component {
 
   onWin = () => {
     Alert.alert('Você venceu!');
-    console.log(Constants.TILE_COUNTER);
     for (let i = 0; i < Constants.BOARD_SIZE; i++) {
       for (let j = 0; j < Constants.BOARD_SIZE; j++) {
         this.grid[i][j].revealWithoutCallback();
+      }
+    }
+  }
+
+  bombSeter = (x,y) => {
+    while (Constants.MAX_BOMBS_CELLS >= 1) {
+      for (let i = 0; i < Constants.BOARD_SIZE; i++) {
+        for (let j = 0; j < Constants.BOARD_SIZE; j++) {
+          if (Math.random() < 0.1  && i !== x && j !== y) {
+            if (Constants.MAX_BOMBS_CELLS >= 1) {
+              this.grid[i][j].state.isMine = true;
+              Constants.MAX_BOMBS_CELLS--;
+            }
+          }
+        }
       }
     }
   }
@@ -45,8 +58,33 @@ export default class App extends Component {
     Constants.TILE_COUNTER = 0;
     for (let i = 0; i < Constants.BOARD_SIZE; i++) {
       for (let j = 0; j < Constants.BOARD_SIZE; j++) {
-        if(this.grid[i][j].state.revealed && !this.grid[i][j].state.isMine){
+        if (this.grid[i][j].state.revealed && !this.grid[i][j].state.isMine) {
           Constants.TILE_COUNTER++;
+        }
+      }
+    }
+  }
+
+  checkForNeighboors = () => {
+    for (let x = 0; x < Constants.BOARD_SIZE; x++) {
+      for (let y = 0; y < Constants.BOARD_SIZE; y++) {
+
+        let neighboors = 0;
+
+        for (let i = -1; i <= 1; i++) {
+          for (let j = -1; j <= 1; j++) {
+            if (x + i >= 0 && x + i <= Constants.BOARD_SIZE - 1 && y + j >= 0 && y + j <= Constants.BOARD_SIZE - 1) {
+              if (this.grid[x + i][y + j].state.isMine) {
+                neighboors++
+              }
+            }
+
+            if (neighboors) {
+              this.grid[x][y].setState({
+                neighboors: neighboors
+              })
+            }
+          }
         }
       }
     }
@@ -63,22 +101,16 @@ export default class App extends Component {
   }
 
   onReveal = (x, y) => {
-    let neighboors = 0;
-    this.checkForTiles();
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        if (x + i >= 0 && x + i <= Constants.BOARD_SIZE - 1 && y + j >= 0 && y + j <= Constants.BOARD_SIZE - 1) {
-          if (this.grid[x + i][y + j].state.isMine) {
-            neighboors++
-          }
-        }
-      }
+
+    if(Constants.FIRST_CLICK){
+      Constants.FIRST_CLICK = false;
+      this.bombSeter(x, y);
+      this.checkForNeighboors();
     }
-    if (neighboors) {
-      this.grid[x][y].setState({
-        neighboors: neighboors
-      })
-    } else {
+
+    this.checkForTiles();
+
+    if (this.grid[x][y].state.neighboors === null) {
       this.revealNeighboors(x, y);
     }
   }
@@ -97,19 +129,20 @@ export default class App extends Component {
           y={rowIdx}
           ref={(ref) => { this.grid[collIdx][rowIdx] = ref }}
         />
-      });
+      },
+      );
 
       return (
         <View key={rowIdx} style={{ width: this.boardWidth, height: Constants.CELL_SIZE, flexDirection: 'row' }}>
           {cellList}
         </View>
       );
-
     });
   }
 
   resetGame = () => {
     Constants.MAX_BOMBS_CELLS = 8;
+    Constants.FIRST_CLICK = true;
     for (let i = 0; i < Constants.BOARD_SIZE; i++) {
       for (let j = 0; j < Constants.BOARD_SIZE; j++) {
         this.grid[i][j].reset();
