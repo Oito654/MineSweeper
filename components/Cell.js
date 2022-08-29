@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Constants from '../Constants';
 import Imagens from '../assets/Imagens';
+import * as Font from 'expo-font';
 
 export default class Cell extends Component {
     constructor(props) {
@@ -23,6 +24,12 @@ export default class Cell extends Component {
         }
     }
 
+    async loadFonts() {
+        await Font.loadAsync({
+            'Silk': require('../assets/fonts/Silkscreen-Regular.ttf'),
+        });
+    }
+
     revealWithoutCallback = () => {
         if (this.state.revealed) {
             return;
@@ -33,6 +40,7 @@ export default class Cell extends Component {
     }
 
     onReveal = (userInitiated) => {
+
         if (this.state.revealed) {
             return;
         }
@@ -72,9 +80,13 @@ export default class Cell extends Component {
     }
 
     render() {
+        if (Constants.FIRST_CLICK) {
+            this.loadFonts();
+        }
+
         if (!this.state.revealed && !this.state.banner) {
             return (
-                <TouchableOpacity onPress={() => { this.onReveal(true); }} onLongPress={() => {this.setState({banner:true})}}>
+                <TouchableOpacity onPress={() => { this.onReveal(true); }} onLongPress={() => { this.setState({ banner: true }) }}>
                     <View style={[styles.cell, { width: this.props.width, height: this.props.height }]}>
 
                     </View>
@@ -83,9 +95,9 @@ export default class Cell extends Component {
         }
         else if (this.state.banner) {
             return (
-                <TouchableOpacity onLongPress={() => {this.setState({banner:false})}}>
+                <TouchableOpacity onLongPress={() => { this.setState({ banner: false }) }}>
                     <View style={[styles.cell, { width: this.props.width, height: this.props.height }]}>
-                        <Image source={Imagens.banner} style={{ width: this.props.width/1.5, height: this.props.height, alignContent: 'center'}} resizeMode="contain" />
+                        <Image source={Imagens.banner} style={{ width: this.props.width / 1.5, height: this.props.height, alignContent: 'center' }} resizeMode="contain" />
                     </View>
                 </TouchableOpacity>
             )
@@ -100,21 +112,21 @@ export default class Cell extends Component {
             } else if (this.state.neighboors) {
                 if (this.state.neighboors == 1) {
                     content = (
-                        <Text style={{ color: 'blue' }}>{this.state.neighboors}</Text>
+                        <Text style={{ color: 'blue', fontFamily: 'Silk' }}>{this.state.neighboors}</Text>
                     )
                 }
                 else if (this.state.neighboors == 2) {
                     content = (
-                        <Text style={{ color: 'green' }}>{this.state.neighboors}</Text>
+                        <Text style={{ color: 'green', fontFamily: 'Silk' }}>{this.state.neighboors}</Text>
                     )
                 }
                 else if (this.state.neighboors == 3) {
                     content = (
-                        <Text style={{ color: 'red' }}>{this.state.neighboors}</Text>
+                        <Text style={{ color: 'red', fontFamily: 'Silk' }}>{this.state.neighboors}</Text>
                     )
                 } else {
                     content = (
-                        <Text>{this.state.neighboors}</Text>
+                        <Text style={{ fontFamily: 'Silk' }}>{this.state.neighboors}</Text>
                     )
                 }
             }
